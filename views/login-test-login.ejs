@@ -1,0 +1,76 @@
+<%- include('parts/html-head') %>
+
+<div class="container">
+  <% if(isLogin){ %>
+  <div class="d-flex justify-content-end">
+    <%= loginData.username %>, 您好
+    <a href="./logout" class="ml-3">登出</a>
+  </div>
+  <table class="table">
+    <tbody>
+      <tr>
+        <th scope="row">會員名稱</th>
+        <td><%= loginData.username %></td>
+      </tr>
+      <tr>
+        <th scope="row">信箱</th>
+        <td><%= loginData.email %></td>
+      </tr>
+      <tr>
+        <th scope="row">性別</th>
+        <td><%= loginData.sex %></td>
+      </tr>
+      <tr>
+        <th scope="row">年齡</th>
+        <td><%= loginData.age %></td>
+      </tr>
+    </tbody>
+  </table>
+  <% } else { %>
+
+  <form method="post" onsubmit="return formCheck()">
+    <div class="form-group">
+      <label for="user">帳號</label>
+      <input type="text" class="form-control" id="user" name="user" />
+    </div>
+    <div class="form-group">
+      <label for="password">密碼</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password"
+        name="password"
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary">登入</button>
+  </form>
+  <script>
+    function formCheck() {
+      fetch("./login", {
+        method: "POST",
+        body: JSON.stringify({
+          user: document.querySelector("#user").value,
+          password: document.querySelector("#password").value,
+        }), //將表單的資料轉存成JSON格式(將表單欄位的值變成變數再組合起來)
+        headers: {
+          "content-type": "application/json",
+        },
+      })
+        .then((r) => r.json())
+        .then((obj) => {
+          console.log(obj);
+          if (obj.success) {
+            location.reload();
+          } else {
+            alert(obj.msg);
+          }
+        });
+
+      return false;
+    }
+  </script>
+  <% } %>
+</div>
+
+<%- include('parts/html-foot') %>
